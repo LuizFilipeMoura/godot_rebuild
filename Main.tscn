@@ -1,0 +1,31 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Enemies/Solider_Enemy/Solider.tscn" type="PackedScene" id=1]
+[ext_resource path="res://TileMap/DIFERENTE_tile.tres" type="TileSet" id=2]
+
+[sub_resource type="Curve2D" id=1]
+_data = {
+"points": PoolVector2Array( 0, 0, 0, 0, 143.348, 444.134, 0, 0, 0, 0, 296.812, 450.861 )
+}
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="Path2D" type="Path2D" parent="Enemies"]
+curve = SubResource( 1 )
+
+[node name="PathFollow2D" type="PathFollow2D" parent="Enemies/Path2D"]
+position = Vector2( 143.348, 444.134 )
+rotation = 0.0438078
+
+[node name="Solider_1" parent="Enemies/Path2D/PathFollow2D" instance=ExtResource( 1 )]
+position = Vector2( -0.198517, -1.38815 )
+
+[node name="TileMap" type="Node2D" parent="."]
+
+[node name="TileMap" type="TileMap" parent="TileMap"]
+tile_set = ExtResource( 2 )
+cell_size = Vector2( 8, 8 )
+format = 1
+tile_data = PoolIntArray( 3801097, 7, 0, 3801098, 7, 0, 3801099, 7, 0, 3801100, 7, 0, 3801101, 7, 0, 3801102, 7, 0, 3801103, 7, 0, 3801104, 7, 0, 3801105, 7, 0, 3801106, 7, 0, 3801107, 7, 0, 3801108, 7, 0, 3801109, 7, 0, 3801110, 7, 0, 3801111, 7, 0, 3801112, 7, 0, 3801113, 7, 0, 3801114, 7, 0, 3801115, 7, 0, 3801116, 7, 0, 3801117, 7, 0, 3801118, 7, 0, 3801119, 7, 0, 3801120, 7, 0, 3801121, 7, 0, 3801122, 7, 0, 3801123, 7, 0, 3801124, 7, 0, 3801125, 7, 0, 3801126, 7, 0, 3801127, 7, 0, 3801128, 7, 0, 3801129, 7, 0, 3801130, 7, 0, 3801131, 7, 0, 3801132, 7, 0 )
