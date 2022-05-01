@@ -57,9 +57,3 @@ anims/Solider_Walk = SubResource( 3 )
 texture = ExtResource( 1 )
 vframes = 3
 hframes = 2
-
-[node name="StartPatrol" type="Timer" parent="."]
-wait_time = 3.0
-one_shot = true
-autostart = true
-[connection signal="timeout" from="StartPatrol" to="." method="_on_StartPatrol_timeout"]

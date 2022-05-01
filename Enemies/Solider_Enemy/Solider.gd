@@ -1,25 +1,15 @@
 extends KinematicBody2D
 
-const UP = Vector2(0,-1)
-const GRAVITY = 10
-var ACCELERATION = 2
-var MAX_SPEED = 300
-var motion = Vector2()
-var isReadyToMove = false
-var isMovingto = "right"
-var lookingTime = 0.5
-var isDead = false;
-var life = 2
-var damage = 2
-var speed = 300
-var isPilot = false
-signal hurtTank
-const JUMP_HEIGHT = -245
-
-onready var patrol = get_parent()
-
+onready var patrol: PathFollow2D = get_parent() 
 export  (String, "Patrol", "Idle", "Shooter") var soliderType  = "Idle"
 
+var motion = Vector2()
+export var direction = 1
+var isDead = false;
+export var life = 2
+export var damage = 2
+var speed = 150
+const JUMP_HEIGHT = -245
 
 onready var sprite = get_node("Sprite")
 onready var animationPlayer = get_node("AnimationPlayer")
@@ -30,35 +20,35 @@ func _ready():
 	pass
 
 func _physics_process(delta):
-	patrol(delta)
-	
-	if !isDead && !is_on_floor() && !isPilot:
-		move_and_collide(Vector2(0, 10))
+	if(soliderType == 'Patrol'):
+		yield(get_tree().create_timer(.5), "timeout")
+		animationPlayer.play("Solider_Walk")
+		patrol(delta)
 		
 func _process(delta):
 	#motion.y += GRAVITY
 	move_and_collide(Vector2(0,10))
-	
-	if !isReadyToMove && !isDead:
-		animationPlayer.play("Solider_Idle")
-		
-	if !isReadyToMove:
-		motion.x = lerp(motion.x, 0, 0.4)
-		
-	if(isReadyToMove && !isDead):
-		
-		if(motion.x > 6):
-			sprite.flip_h = false
-			animationPlayer.play("Solider_Walk")
-		elif (motion.x < -6):
-			sprite.flip_h = true
-			animationPlayer.play("Solider_Walk")
-			
-	motion = move_and_slide(motion, UP)
 
 
+var changingDirection = false
 func patrol(delta):
-	patrol.offset += delta * speed
+	var initialDirection = direction
+	if(patrol.unit_offset == 1 || patrol.unit_offset == 0):
+		direction = -direction
+		animationPlayer.play("Solider_Idle")
+		yield(get_tree().create_timer(.5), 'timeout')
+		
+	if(initialDirection != direction):
+		if(direction>0):
+			sprite.flip_h = false
+		else:
+			sprite.flip_h = true
+
+
+
+		
+	patrol.offset += delta * speed * direction
+	
 
 
 func knockback(amount, positionX):
@@ -72,29 +62,9 @@ func knockback(amount, positionX):
 	else:
 		motion.x = -100
 
-func stop():
-	isReadyToMove = false
-
-func  _on_Timer_timeout():
-	if !isDead:
-		isReadyToMove = true
-	
 
 
 func die():
-
 	isDead = true
 	self.queue_free()
 
-func _on_TurningPointR_body_entered(body):
-	if(body.is_in_group("Enemy")):
-		stop()
-		$Timer.start(lookingTime)
-		isMovingto = "left"
-
-
-func _on_TurningPointL_body_entered(body):
-	if(body.is_in_group("Enemy")):
-		stop()
-		$Timer.start(lookingTime)
-		isMovingto = "right"
