@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://Enemies/Solider_Enemy/SPRITESHEET.png" type="Texture" id=1]
 [ext_resource path="res://Enemies/Solider_Enemy/Solider.gd" type="Script" id=2]
@@ -21,8 +21,37 @@ tracks/0/keys = {
 "values": [ 0 ]
 }
 
-[sub_resource type="Animation" id=3]
-resource_name = "Solider_Walk"
+[sub_resource type="Animation" id=6]
+resource_name = "Solider_Shooting"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ 6, 7, 6 ]
+}
+tracks/1/type = "method"
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.1 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "shoot"
+} ]
+}
+
+[sub_resource type="Animation" id=4]
 length = 0.6
 loop = true
 tracks/0/type = "value"
@@ -38,6 +67,12 @@ tracks/0/keys = {
 "values": [ 2, 3, 4, 5, 4, 3, 2 ]
 }
 
+[sub_resource type="RectangleShape2D" id=5]
+extents = Vector2( 177.999, 16.8033 )
+
+[sub_resource type="CircleShape2D" id=7]
+radius = 4.53232
+
 [node name="Solider" type="KinematicBody2D"]
 script = ExtResource( 2 )
 soliderType = "Patrol"
@@ -51,9 +86,25 @@ shape = SubResource( 1 )
 autoplay = "Solider_Idle"
 playback_speed = 0.5
 anims/Solider_Idle = SubResource( 2 )
-anims/Solider_Walk = SubResource( 3 )
+anims/Solider_Shooting = SubResource( 6 )
+anims/Solider_Walk = SubResource( 4 )
 
 [node name="Sprite" type="Sprite" parent="."]
 texture = ExtResource( 1 )
 vframes = 3
-hframes = 2
+hframes = 3
+frame = 6
+
+[node name="PlayerDetector" type="Area2D" parent="."]
+visible = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerDetector"]
+shape = SubResource( 5 )
+
+[node name="Gun" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Gun"]
+position = Vector2( 13.2433, 0.794601 )
+shape = SubResource( 7 )
+[connection signal="body_entered" from="PlayerDetector" to="." method="_on_PlayerDetector_body_entered"]
+[connection signal="body_exited" from="PlayerDetector" to="." method="_on_PlayerDetector_body_exited"]
