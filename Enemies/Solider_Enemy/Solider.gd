@@ -11,36 +11,30 @@ var lookingTime = 0.5
 var isDead = false;
 var life = 2
 var damage = 2
+var speed = 300
 var isPilot = false
 signal hurtTank
 const JUMP_HEIGHT = -245
 
+onready var patrol = get_parent()
+
+export  (String, "Patrol", "Idle", "Shooter") var soliderType  = "Idle"
+
+
 onready var sprite = get_node("Sprite")
 onready var animationPlayer = get_node("AnimationPlayer")
 # Called when the node enters the scene tree for the first time.
+
+
 func _ready():
-	isReadyToMove = true
-	if self.name == "Enemy2":
-		life = 4 
+	pass
 
-func knockback(amount, positionX):
-	motion.y = JUMP_HEIGHT*amount
-	if positionX > self.position.x:
-		sprite.flip_h = false
-	if positionX < self.position.x:
-		sprite.flip_h = true
-	if (sprite.flip_h):
-		motion.x = 100
-	else:
-		motion.x = -100
-
-func stop():
-	isReadyToMove = false
-
-func  _on_Timer_timeout():
-	if !isDead:
-		isReadyToMove = true
+func _physics_process(delta):
+	patrol(delta)
 	
+	if !isDead && !is_on_floor() && !isPilot:
+		move_and_collide(Vector2(0, 10))
+		
 func _process(delta):
 	#motion.y += GRAVITY
 	move_and_collide(Vector2(0,10))
@@ -60,19 +54,32 @@ func _process(delta):
 			sprite.flip_h = true
 			animationPlayer.play("Solider_Walk")
 			
-		if isMovingto == "left":
-			motion.x -=  ACCELERATION # LEFT
-			motion.x = max(motion.x, -MAX_SPEED)
-		if isMovingto == "right":
-			motion.x +=  ACCELERATION # RIGHT
-			motion.x = min(motion.x, MAX_SPEED)
-			
 	motion = move_and_slide(motion, UP)
-#	pass
 
-func _physics_process(delta):
-	if !isDead && !is_on_floor() && !isPilot:
-		move_and_collide(Vector2(0, 10))
+
+func patrol(delta):
+	patrol.offset += delta * speed
+
+
+func knockback(amount, positionX):
+	motion.y = JUMP_HEIGHT*amount
+	if positionX > self.position.x:
+		sprite.flip_h = false
+	if positionX < self.position.x:
+		sprite.flip_h = true
+	if (sprite.flip_h):
+		motion.x = 100
+	else:
+		motion.x = -100
+
+func stop():
+	isReadyToMove = false
+
+func  _on_Timer_timeout():
+	if !isDead:
+		isReadyToMove = true
+	
+
 
 func die():
 
