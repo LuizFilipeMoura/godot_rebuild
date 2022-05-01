@@ -14,10 +14,8 @@ polygon = PoolVector2Array( 0, 0, 0, 8, 8, 8, 8, 0 )
 extents = Vector2( 0.313726, 0.313725 )
 
 [sub_resource type="StreamTexture" id=3]
-load_path = "res://.import/sprite_0.png-60d39c5693fe650bf3811ba6440f184e.stex"
 
 [sub_resource type="StreamTexture" id=4]
-load_path = "res://.import/fence.png-90b238f78cc7742effaa52ada5a32266.stex"
 
 [sub_resource type="OccluderPolygon2D" id=5]
 polygon = PoolVector2Array( 0, 0, 8, 0, 8, 8, 0, 8 )
